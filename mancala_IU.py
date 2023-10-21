@@ -6,6 +6,8 @@ from Mancala import Mancala
 pygame.init()
 
 mancala = Mancala()
+
+
 #size de la fenetre
 screen = pygame.display.set_mode((800,600))
 
@@ -66,23 +68,23 @@ def show_score(x,y):
     score = font.render("Score: "+ str(score_value),True,(0,0,0))
     screen.blit(score,(x,y))
 
-
+"""
 puits = []
-puits.append(Puit("A", 562, 308, 4))
-puits.append(Puit("B", 562, 308, 4))
-puits.append(Puit("C", 562, 308, 4))
-puits.append(Puit("D", 562, 308, 4))
-puits.append(Puit("E", 562, 308, 4))
-puits.append(Puit("F", 562, 308, 4))
-puits.append(Puit("2", 562, 308, 0))
-puits.append(Puit("L", 562, 308, 4))
-puits.append(Puit("K", 562, 308, 4))
-puits.append(Puit("J", 562, 308, 4))
-puits.append(Puit("I", 562, 308, 4))
-puits.append(Puit("H", 562, 308, 4))
-puits.append(Puit("G", 562, 308, 4))
-puits.append(Puit("1", 562, 308, 0))
-
+puits.append(Puit("A", 562, 308, 4,("./image/1.jpg")))
+puits.append(Puit("B", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("C", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("D", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("E", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("F", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("2", 562, 308, 0 ,("./image/1.jpg")))
+puits.append(Puit("L", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("K", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("J", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("I", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("H", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("G", 562, 308, 4 ,("./image/1.jpg")))
+puits.append(Puit("1", 562, 308, 0 ,("./image/1.jpg")))
+"""
 #def show_puit(x,y):
   # puits[0] = font.render(str(puits[0].nbGraines),True,(0,0,0))
    #screen.blit(puits[0],(x,y))
@@ -111,6 +113,59 @@ def puit_collider(x,y):
     pygame.draw.rect(box,0,box.get_rect())
     screen.blit(box, (x,y))
 
+
+
+# mancala function
+gameOver = False
+
+def event_AI():
+    mancala.ordiDeplacement("max")
+    updateGrill()
+
+def gameOverCheck():
+    global gameOver
+    print(gameOver)
+    if mancala.terminateGame() and gameOver != True:
+        gameOver = True
+        updateGrill()
+        return True
+    return False
+
+def orderManager():
+    if gameOverCheck() or gameOver:
+        evaluation = mancala.evaluate(mancala.grille)
+        #print(evaluation)
+        if evaluation > 0:
+            print("Le joueur a gagne")
+            print("Winner player")
+        elif evaluation == 0:
+            print("Egal")
+            print("Winner egal")
+        elif evaluation < 0:
+            print("AI a gagne")
+            print("Winner AI")
+    elif mancala.joueurTour:
+        print("Tour du joueur")
+    else:
+        print("Tour du AI")
+        event_AI()
+
+def updateGrill():
+    orderManager()
+
+
+def event_puit(id):
+    if mancala.joueurDeplacement(puits[id].label) != False:
+        updateGrill()
+    else:
+        orderManager()
+
+def event_reset():
+    global gameOver
+    global mancala
+    mancala = Mancala()
+    updateGrill()
+    gameOver = False
 
 
 running = True
@@ -153,38 +208,10 @@ while running:
              if is_over(rectangles[index], pos):
                  print('The mouse is over the rectangle')
                  mancala.joueurDeplacement(key)
-             """
-            if is_over(rectangles[0], pos): # pass in the pygame.Rect and the mouse coords
-                print('The mouse is over the rectangle')
-             
-                mancala.joueurDeplacement("A")
-               
-                
-            elif is_over(rectangles[1], pos):
-                print('The mouse is over the rectangle')
-                mancala.joueurDeplacement("B")
-               
-            elif is_over(rectangles[2], pos):
-                print('The mouse is over the rectangle')
-                mancala.joueurDeplacement("C")
-            elif is_over(rectangles[3], pos):
-                print('The mouse is over the rectangle')
-                mancala.joueurDeplacement("D")
-            elif is_over(rectangles[4], pos):
-                print('The mouse is over the rectangle')
-                mancala.joueurDeplacement("E")
-            elif is_over(rectangles[5], pos):
-                print('The mouse is over the rectangle')  
-                mancala.joueurDeplacement("F")  
-            else:
-                print('The mouse is not over the rectangle')
-                print(pos)
-            """
-           
-            
 
 
-    mancala.ordiDeplacement("random")
+   
+    orderManager()
         
     show_score(textX,textY)
    # show_puit(puits[0].x, puits[0].y)

@@ -21,10 +21,10 @@ class Mancala:
         self.joueurTour = random.choice([True, False])
 
     def joueurDeplacement(self, id):
-       # if not self.joueurTour or id in "GHIJKL21" or self.grille[id] == 0:
-        #    return False
-        if id in "GHIJKL21" or self.grille[id] == 0:
+        print(self.joueurTour)
+        if not self.joueurTour or id in "GHIJKL21" or self.grille[id] == 0:
             return False
+        
 
 
         bumps = self.grille[id]
@@ -74,7 +74,7 @@ class Mancala:
 
         if not valid_moves:
             return "end game"
-
+        print(self.joueurTour)
         move = random.choice(valid_moves)
         self.makeMove(self.grille, move)
         print(f"Random Agent: Chose Move = {move}")
