@@ -135,23 +135,26 @@ while running:
             pos = event.pos # recup la position de la souris
             if is_over(rectangles[0], pos): # pass in the pygame.Rect and the mouse coords
                 print('The mouse is over the rectangle')
-                print(rectangles[0])
-                print(arrayRecAndGrille.get(0))
+              
                 mancala.joueurDeplacement("A")
                
-                print(mancala.grille)
+                
             elif is_over(rectangles[1], pos):
                 print('The mouse is over the rectangle')
                 mancala.joueurDeplacement("B")
-                print(mancala.grille)
+               
             elif is_over(rectangles[2], pos):
                 print('The mouse is over the rectangle')
+                mancala.joueurDeplacement("C")
             elif is_over(rectangles[3], pos):
                 print('The mouse is over the rectangle')
+                mancala.joueurDeplacement("D")
             elif is_over(rectangles[4], pos):
                 print('The mouse is over the rectangle')
+                mancala.joueurDeplacement("E")
             elif is_over(rectangles[5], pos):
-                print('The mouse is over the rectangle')    
+                print('The mouse is over the rectangle')  
+                mancala.joueurDeplacement("F")  
             else:
                 print('The mouse is not over the rectangle')
                 print(pos)
