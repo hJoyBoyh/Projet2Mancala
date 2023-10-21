@@ -23,6 +23,9 @@ class Mancala:
     def joueurDeplacement(self, id):
        # if not self.joueurTour or id in "GHIJKL21" or self.grille[id] == 0:
         #    return False
+        if id in "GHIJKL21" or self.grille[id] == 0:
+            return False
+
 
         bumps = self.grille[id]
         self.grille[id] = 0
