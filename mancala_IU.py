@@ -11,8 +11,9 @@ pygame.display.set_caption("Mancala")
 #mancala background
 
 background = pygame.image.load('images/board.jpg')
-backgroundX = 110
-backgroundY = 400
+backgroundX = 120
+backgroundY = 200
+
 
 
 running = True
@@ -23,6 +24,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = event.pos
+            print(mouse_x)
+            print(mouse_y)
+
+            print("Mouse button pressed")
     
 
     pygame.display.update()
