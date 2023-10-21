@@ -21,8 +21,8 @@ class Mancala:
         self.joueurTour = random.choice([True, False])
 
     def joueurDeplacement(self, id):
-        if not self.joueurTour or id in "GHIJKL21" or self.grille[id] == 0:
-            return False
+       # if not self.joueurTour or id in "GHIJKL21" or self.grille[id] == 0:
+        #    return False
 
         bumps = self.grille[id]
         self.grille[id] = 0
@@ -47,7 +47,7 @@ class Mancala:
                         self.grille[current_key] = 0
         
         self.joueurTour = replay
-
+        print(self.grille)
         return True
 
     def ordiDeplacement(self, agent="random"):
