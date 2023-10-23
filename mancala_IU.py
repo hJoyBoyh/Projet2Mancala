@@ -13,6 +13,23 @@ screen = pygame.display.set_mode((800,600))
 
 pygame.display.set_caption("Mancala")
 
+# img load
+point0 = pygame.image.load("images/e.jpg")
+point1 = pygame.image.load("images/1.jpg")
+point2 = pygame.image.load("images/2.jpg")
+point3 = pygame.image.load("images/3.jpg")
+point4 = pygame.image.load("images/4.jpg")
+point5 = pygame.image.load("images/5.jpg")
+pointFull = pygame.image.load("images/m.jpg")
+
+panier0 = pygame.image.load("images/se.jpg")
+panier1 = pygame.image.load("images/s1.jpg")
+panier2 = pygame.image.load("images/s2.jpg")
+panier3 = pygame.image.load("images/s3.jpg")
+panier4 = pygame.image.load("images/s4.jpg")
+panier5 = pygame.image.load("images/s5.jpg")
+panierFull = pygame.image.load("images/sm.jpg")
+
 #mancala background
 
 background = pygame.image.load('images/board.jpg')
@@ -212,7 +229,7 @@ while running:
 
    
     orderManager()
-        
+    screen.blit(point1,(300,300))
     show_score(textX,textY)
    # show_puit(puits[0].x, puits[0].y)
     pygame.display.update()
