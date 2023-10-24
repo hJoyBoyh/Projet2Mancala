@@ -80,8 +80,8 @@ def play():
         
         global gameOver
         print(gameOver)
-        if mancala.terminateGame() and gameOver == True:
-            #gameOver = True
+        if mancala.terminateGame() and gameOver != True:
+            gameOver = True
             updateGrill()
             return True
         return False
@@ -323,9 +323,8 @@ def play():
                 
                        
         if rep == "Y":
-           global gameOver
-           gameOver = True
-           replay()
+           
+         replay()
         
            
         
@@ -442,7 +441,6 @@ def replay():
                   global mancala
                   print(mancala.grille)
                   reset_game()
-                  
                   main_menu()
                    
                 if QUIT_BUTTON.checkForInput(MOUSE_POS):
