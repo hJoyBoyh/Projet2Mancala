@@ -59,25 +59,17 @@ def play():
     tourX = 10
     tourY = 10
     
-    
     def show_tour(tour_value):
         score = font.render(tour_value,True,(0,0,0))
         screen.blit(score,(tourX,tourY))
-        
-
-       
 
 #-------------------
 
-
     def event_AI():
-       
         mancala.ordiDeplacement(difficulty)
         updateGrill()
-        
 
     def gameOverCheck():
-        
         global gameOver
         print(gameOver)
         if mancala.terminateGame() and gameOver != True:
@@ -85,15 +77,14 @@ def play():
             updateGrill()
             return True
         return False
+    
     def orderManager():
-        
-         global rep
+         global rep # y fini n pas fini"
          global winner
          if gameOverCheck() or gameOver:
             evaluation = mancala.evaluate(mancala.grille)
-        #print(evaluation)
+    
             if evaluation > 0:
-            
              show_tour("Winner player")
              rep = "Y"
              winner = "Winner player"
@@ -103,17 +94,13 @@ def play():
                 print("Winner egal")
                 rep = "Y"
                 winner = "Egal"
-                
-                
-                
+                  
             elif evaluation < 0:
                 print(f"{difficulty}AI a gagne")
-
                 show_tour("Winner AI")
                 rep = "Y"
                 winner = "Winner AI"
-              
-                
+
          elif mancala.joueurTour:
             print("Tour du joueur")
             show_tour("Tour du Joueur")
@@ -125,9 +112,7 @@ def play():
 
 
     def updateGrill():
-        
         for key, value in mancala.grille.items():
-            
             for val in mancala_UI.puits:
                 if key == val.label:
                     val.nbGraines = value
@@ -135,13 +120,9 @@ def play():
         orderManager()
 
     def event_puit(id):
-        
         if mancala.joueurDeplacement(id) != False:
-            updateGrill()
-            
-            
-        else:
-            
+            updateGrill() 
+        else: 
             orderManager()
             
     
@@ -160,7 +141,6 @@ def play():
         for index, key in enumerate(mancala.grille):
             mancala_UI.puits[index].nbGraines = mancala.grille.get(mancala_UI.puits[index].label)
             print(mancala_UI.puits[index].label)
-           
 
     #basket et puit si = 0
             if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
@@ -292,43 +272,24 @@ def play():
         puit_collider(265,220)
         puit_collider(207,220)
         
-        
-        
-        
-       
-        
-
-
-        updateGrill()
-        update_puits()
         for event in pygame.event.get():
-
 # event fermer window
             if event.type == pygame.QUIT:
                 pygame.quit()
-
 #event click mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = event.pos # recup la position de la souris
-
                 for index, key in enumerate(mancala.grille):
-             
              # vu que la listPuitCollider est sync avec la grille et les puits quand tu 
              # click sur un collider avec son index tu prend le puit de la grille qui a le meme index et tu effectue la fonction
                     if click_dectection(listPuitCollider[index], pos):
                         print('The mouse is over the rectangle')
                        # mancala.joueurDeplacement(key)
                         event_puit(key)
-                        
-                
                        
         if rep == "Y":
-           
-         replay()
-        
-           
-        
-        #update_puits()
+            replay()
+        update_puits()
         orderManager()
     
    # show_puit(puits[0].x, puits[0].y)
