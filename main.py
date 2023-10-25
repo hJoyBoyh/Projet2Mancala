@@ -128,6 +128,13 @@ def play():
         SCREEN.blit(puitL,(543,170))
         SCREEN.blit(puit2,(710,255))
 
+        # show les puits des user
+        puitJoueur = font.render("Joueur",True,(0,0,0))
+        SCREEN.blit(puitJoueur,(600,130))
+        puitAI = font.render("AI",True,(0,0,0))
+        SCREEN.blit(puitAI,(50,130))
+
+
     def show_puit_img():
         global mancala_UI
         for i in mancala_UI.puits:
