@@ -3,221 +3,94 @@ from Mancala import Mancala
 from mancala_IU import Mancala_UI
 from button import Button
 
-# init the pygame
-pygame.init()
-
-
-#size de la fenetre
-
-screen = pygame.display.set_mode((800,600))
 #global variable
-gameOver = False
-rep = ""
-difficulty = ""
-winner =""
-
-#instance mancala 
+replay_available = False
+ai_difficulty = ""
+winner_of_the_game =""
 mancala = Mancala()
-#instancier puits
 mancala_UI =  Mancala_UI()
-# caption set
-pygame.display.set_caption("Mancala")
-#background main menu
-BG = pygame.image.load("assets/Background.png")
 
+#fonction utilitaire
 def reset_game():
     global mancala
     global mancala_UI
+
     mancala = Mancala()
     mancala_UI =  Mancala_UI()
-    print(mancala.grille)
+
 
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
-
-
 
 # detection click bouton
 def click_dectection(rect, pos):
     return True if rect.collidepoint(pos[0], pos[1]) else False
 
+# init the pygame
+pygame.init()
+
+SCREEN = pygame.display.set_mode((800,600))
+
+pygame.display.set_caption("Mancala")
+
+BG = pygame.image.load("assets/Background.png")
+
+
+def main_menu():
+    
+    while True:
+       
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(70).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 250), 
+                            text_input="PLAY", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(400, 400), 
+                            text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                   choose_difficulty()
+                
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    
+        pygame.display.update()
 def play():
 
-    global difficulty
-   
-    print(mancala.grille)
-    
+    global ai_difficulty
+
+    listPuitCollider = []
+    #---------- All Show Fonction---------------
     #mancala board
-    board = pygame.image.load('images/board.jpg')
-    boardX = 120
-    boardY = 200
-    #-------------------
+    def show_board():
+        board = pygame.image.load('images/board.jpg')
+        boardX = 120
+        boardY = 200
+        SCREEN.blit(board,(boardX,boardY))
 
-    # afficher tour de quel participant
-    
+
+    # afficher tour de quel participant    
     font = pygame.font.Font('assets/font.ttf',32)
-    tourX = 10
-    tourY = 10
-    
     def show_tour(tour_value):
-        score = font.render(tour_value,True,(0,0,0))
-        screen.blit(score,(tourX,tourY))
-
-#-------------------
-
-    def event_AI():
-        mancala.ordiDeplacement(difficulty)
-        updateGrill()
-
-    def gameOverCheck():
-        global gameOver
-        print(gameOver)
-        if mancala.terminateGame() and gameOver != True:
-            gameOver = True
-            updateGrill()
-            return True
-        return False
-    
-    def orderManager():
-         global rep # y fini n pas fini"
-         global winner
-         if gameOverCheck() or gameOver:
-            evaluation = mancala.evaluate(mancala.grille)
-    
-            if evaluation > 0:
-             show_tour("Winner player")
-             rep = "Y"
-             winner = "Winner player"
-   
-            elif evaluation == 0:
-                show_tour("Egal")
-                print("Winner egal")
-                rep = "Y"
-                winner = "Egal"
-                  
-            elif evaluation < 0:
-                print(f"{difficulty}AI a gagne")
-                show_tour("Winner AI")
-                rep = "Y"
-                winner = "Winner AI"
-
-         elif mancala.joueurTour:
-            print("Tour du joueur")
-            show_tour("Tour du Joueur")
-         else:
-            print(f"{difficulty}Tour du AI")
-            show_tour("Tour du AI")
-            event_AI()
-         
-    def gameManager():
-        global rep # y fini n pas fini"
-        global winner
-        if mancala.check_game_over(mancala.grille):
-            evaluation = mancala.evaluate(mancala.grille)
-    
-            if evaluation > 0:
-             show_tour("Winner player")
-             rep = "Y"
-             winner = f"Winner player {mancala.get_winner_points(mancala.grille)} points"
-   
-            elif evaluation == 0:
-                show_tour("Egal")
-                print("Winner egal")
-                rep = "Y"
-                winner = f"Egal {mancala.get_winner_points(mancala.grille)} points"
-                  
-            elif evaluation < 0:
-                print(f"{difficulty}AI a gagne")
-                show_tour(f"Winner AI")
-                rep = "Y"
-                winner = f"Winner AI {mancala.get_winner_points(mancala.grille)} points"
-            replay()
-        elif mancala.joueurTour:
-            print("Tour du joueur")
-            show_tour("Tour du Joueur")
-        else:
-            print(f"{difficulty}Tour du AI")
-            show_tour("Tour du AI")
-            event_AI()
-
-
-    def updateGrill():
-        for key, value in mancala.grille.items():
-            for val in mancala_UI.puits:
-                if key == val.label:
-                    val.nbGraines = value
-
-        #orderManager()
-        gameManager()
-
-    def event_puit(id):
-        if mancala.joueurDeplacement(id) != False:
-            updateGrill() 
-        else: 
-            #orderManager()
-            gameManager()
-            
-    
-    def event_reset():
-        global gameOver
-        global mancala
-        mancala = Mancala()
-        updateGrill()
-        gameOver = False
-
-    
-
-    # change son nbGraines et son image correspondant
-    def update_puits():
-        
-        for index, key in enumerate(mancala.grille):
-            mancala_UI.puits[index].nbGraines = mancala.grille.get(mancala_UI.puits[index].label)
-            print(mancala_UI.puits[index].label)
-
-    #basket et puit si = 0
-            if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/e.jpg")
-            if mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/se.jpg")
-       
-    # puit 
-            if not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 1:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/1.jpg")
-
-            if not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 2:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/2.jpg")
-
-            if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 3:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/3.jpg")
-
-            if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 4:
-                 mancala_UI.puits[index].bouton = pygame.image.load("images/4.jpg")
-
-            if not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 5:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/5.jpg")
-    
-            if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines > 5:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/m.jpg")
-
-    # panier
-            if mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 1:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/s1.jpg")
-
-            if mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 2:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/s2.jpg")
-
-            if mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 3:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/s3.jpg")
-
-            if mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 4:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/s4.jpg")
-
-            if mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 5:
-                 mancala_UI.puits[index].bouton = pygame.image.load("images/s5.jpg")
-    
-            if mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines > 5:
-                mancala_UI.puits[index].bouton = pygame.image.load("images/sm.jpg")
-
+         tourX = 10
+         tourY = 10
+         tour = font.render(tour_value,True,(0,0,0))
+         SCREEN.blit(tour,(tourX,tourY))
 
     def show_puit_score():
     
@@ -230,13 +103,13 @@ def play():
         puitF= font.render(str(mancala_UI.puits[5].nbGraines),True,(0,0,0))
         puit1= font.render(str(mancala_UI.puits[13].nbGraines),True,(0,0,0))
 
-        screen.blit(puitA,(207,350))
-        screen.blit(puitB,(265,350))
-        screen.blit(puitC,(325,350))
-        screen.blit(puitD,(423,350))
-        screen.blit(puitE,(483,350))
-        screen.blit(puitF,(543,350))
-        screen.blit(puit1,(50,255))
+        SCREEN.blit(puitA,(207,350))
+        SCREEN.blit(puitB,(265,350))
+        SCREEN.blit(puitC,(325,350))
+        SCREEN.blit(puitD,(423,350))
+        SCREEN.blit(puitE,(483,350))
+        SCREEN.blit(puitF,(543,350))
+        SCREEN.blit(puit1,(50,255))
     #AI
         puitG= font.render(str(mancala_UI.puits[12].nbGraines),True,(0,0,0))
         puitH= font.render(str(mancala_UI.puits[11].nbGraines),True,(0,0,0))
@@ -246,20 +119,124 @@ def play():
         puitL= font.render(str(mancala_UI.puits[7].nbGraines),True,(0,0,0))
         puit2= font.render(str(mancala_UI.puits[6].nbGraines),True,(0,0,0))
 
-        screen.blit(puitG,(207,170))
-        screen.blit(puitH,(265,170))
-        screen.blit(puitI,(325,170))
-        screen.blit(puitJ,(423,170))
-        screen.blit(puitK,(483,170))
-        screen.blit(puitL,(543,170))
-        screen.blit(puit2,(710,255))
+        SCREEN.blit(puitG,(207,170))
+        SCREEN.blit(puitH,(265,170))
+        SCREEN.blit(puitI,(325,170))
+        SCREEN.blit(puitJ,(423,170))
+        SCREEN.blit(puitK,(483,170))
+        SCREEN.blit(puitL,(543,170))
+        SCREEN.blit(puit2,(710,255))
 
     def show_puit_img():
         global mancala_UI
         for i in mancala_UI.puits:
-            screen.blit(i.bouton,(i.x,i.y))
+            SCREEN.blit(i.bouton,(i.x,i.y))
 
-    listPuitCollider = []
+#------- Game handler -------------
+
+    def event_AI():
+        mancala.ordiDeplacement(ai_difficulty)
+        updateGrill()
+
+         
+    def gameManager():
+        global replay_available 
+        global winner_of_the_game
+
+        if mancala.check_game_over(mancala.grille):
+            evaluation = mancala.evaluate(mancala.grille)
+    
+            if evaluation > 0:
+             replay_available = True
+             winner_of_the_game = f"Winner player {mancala.get_winner_points(mancala.grille)} points"
+
+            elif evaluation == 0:
+                replay_available = True
+                winner_of_the_game = f"Egal {mancala.get_winner_points(mancala.grille)} points"
+                  
+            elif evaluation < 0:
+                replay_available = True
+                winner_of_the_game = f"Winner AI {mancala.get_winner_points(mancala.grille)} points"
+            replay()
+
+        elif mancala.joueurTour:
+            show_tour("Tour du Joueur")
+        else:
+            show_tour("Tour du AI")
+            event_AI()
+
+
+   
+
+    def event_puit(id):
+        if mancala.joueurDeplacement(id) != False:
+            updateGrill() 
+        else: 
+            gameManager()
+            
+
+#--------- Update Function------------------
+    def updateGrill():
+        for key, value in mancala.grille.items():
+            for val in mancala_UI.puits:
+                if key == val.label:
+                    val.nbGraines = value
+                    
+        gameManager()
+
+
+    
+    def update_puits():
+        
+        for index, key in enumerate(mancala.grille):
+            mancala_UI.puits[index].nbGraines = mancala.grille.get(mancala_UI.puits[index].label)
+            print(mancala_UI.puits[index].label)
+
+    #basket et puit si = 0
+            if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/e.jpg")
+            elif mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/se.jpg")
+       
+    # puit 
+            if not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 1:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/1.jpg")
+
+            elif not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 2:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/2.jpg")
+
+            elif not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 3:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/3.jpg")
+
+            elif not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 4:
+                 mancala_UI.puits[index].bouton = pygame.image.load("images/4.jpg")
+
+            elif not mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 5:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/5.jpg")
+    
+            elif not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines > 5:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/m.jpg")
+
+    # panier
+            if mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 1:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/s1.jpg")
+
+            elif mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 2:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/s2.jpg")
+
+            elif mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 3:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/s3.jpg")
+
+            elif mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 4:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/s4.jpg")
+
+            elif mancala_UI.puits[index].label in "12" and mancala_UI.puits[index].nbGraines == 5:
+                 mancala_UI.puits[index].bouton = pygame.image.load("images/s5.jpg")
+    
+            elif mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines > 5:
+                mancala_UI.puits[index].bouton = pygame.image.load("images/sm.jpg")
+
+
     def puit_collider(x,y):
         rect_width = 40
         rect_height = 40
@@ -270,24 +247,23 @@ def play():
 
     # dessine le rectangle
         box = pygame.Surface(rectangle.size,pygame.SRCALPHA)
-    #box.fill((100,100,100,128))                         # notice the alpha value in the color
         pygame.draw.rect(box,0,box.get_rect())
-        screen.blit(box, (x,y))
+        SCREEN.blit(box, (x,y))
 
 
     while True:
         # mettre le background en blanc
-        screen.fill((255,255,255))
+        SCREEN.fill((255,255,255))
 
-# affiche le board dans screen
-        screen.blit(board,(boardX,boardY))
+        # affiche le board dans screen
+        show_board()
 
-# affiche les puits
+        # affiche les puits
         show_puit_img()
         show_puit_score()
-#mettre les box collider des puits
+        #mettre les box collider des puits
 
-#JOUEUR
+        #JOUEUR
         puit_collider(207,285)
         puit_collider(265,285)
         puit_collider(325,285)
@@ -295,7 +271,7 @@ def play():
         puit_collider(483,285)
         puit_collider(543,285)
         puit_collider(600,255)
-#IA     
+        #IA     
         puit_collider(145,255)
         puit_collider(543,220)
         puit_collider(483,220)
@@ -305,22 +281,19 @@ def play():
         puit_collider(207,220)
         
         for event in pygame.event.get():
-# event fermer window
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
-#event click mouse
+            #event click mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = event.pos # recup la position de la souris
-                for index, key in enumerate(mancala.grille):
-             # vu que la listPuitCollider est sync avec la grille et les puits quand tu 
-             # click sur un collider avec son index tu prend le puit de la grille qui a le meme index et tu effectue la fonction
+                for index, key in enumerate(mancala.grille): # vu que la listPuitCollider est sync avec la grille et les puits quand tu click sur un collider avec son index tu prend le puit de la grille qui a le meme index et tu effectue la fonction
                     if click_dectection(listPuitCollider[index], pos):
-                        print('The mouse is over the rectangle')
-                       # mancala.joueurDeplacement(key)
                         event_puit(key)
                        
-        if rep == "Y":
+        if replay_available  == True:
             replay()
+
         update_puits()
         gameManager()
     
@@ -331,10 +304,10 @@ def play():
 
 
 def choose_difficulty():
-    bg2 = pygame.image.load("assets/Background2.png")
+    background_2 = pygame.image.load("assets/Background2.png")
     while True:
-        screen.fill("black")
-        screen.blit(bg2, (0, 0))
+        SCREEN.fill("black")
+        SCREEN.blit(background_2, (0, 0))
 
         MOUSE_POS = pygame.mouse.get_pos()
 
@@ -348,35 +321,32 @@ def choose_difficulty():
         regle_instruction_4 = "Les coffres à trésors restent vides pour le moment."
         regle_instruction_5 = "SELECT YOUR DIFFICULTY"
 
-        REGLE_TEXT_1 = get_font(7).render(regle_instruction_1, True, "#b68f40")
+        REGLE_TEXT_1 = get_font(7.5).render(regle_instruction_1, True, "#b68f40")
         REGLE_TEXT_RECT_1 = REGLE_TEXT_1.get_rect(center=(400, 200))
-        REGLE_TEXT_2 = get_font(7).render(regle_instruction_2, True, "#b68f40")
-        REGLE_TEXT_RECT_2 = REGLE_TEXT_2.get_rect(center=(400,215 ))
-        REGLE_TEXT_3 = get_font(7).render(regle_instruction_3, True, "#b68f40")
+        REGLE_TEXT_2 = get_font(7.5).render(regle_instruction_2, True, "#b68f40")
+        REGLE_TEXT_RECT_2 = REGLE_TEXT_2.get_rect(center=(400,215))
+        REGLE_TEXT_3 = get_font(7.5).render(regle_instruction_3, True, "#b68f40")
         REGLE_TEXT_RECT_3 = REGLE_TEXT_3.get_rect(center=(400, 230))
-        REGLE_TEXT_6 = get_font(7).render(regle_instruction_6, True, "#b68f40")
+        REGLE_TEXT_6 = get_font(7.5).render(regle_instruction_6, True, "#b68f40")
         REGLE_TEXT_RECT_6 = REGLE_TEXT_6.get_rect(center=(400, 240))
-        REGLE_TEXT_4 = get_font(7).render(regle_instruction_4, True, "#b68f40")
+        REGLE_TEXT_4 = get_font(7.5).render(regle_instruction_4, True, "#b68f40")
         REGLE_TEXT_RECT_4 = REGLE_TEXT_4.get_rect(center=(400, 250))
-        REGLE_TEXT_5 = get_font(30).render(regle_instruction_5, True, "#b68f40")
-        REGLE_TEXT_RECT_5 = REGLE_TEXT_5.get_rect(center=(380, 280))
+        REGLE_TEXT_5 = get_font(30).render(regle_instruction_5, True, "black")
+        REGLE_TEXT_RECT_5 = REGLE_TEXT_5.get_rect(center=(370, 280))
         
 
         
         
-        screen.blit(REGLE_TITLE,REGLE_RECT)
-        screen.blit(REGLE_TEXT_1,REGLE_TEXT_RECT_1)
-        
-        screen.blit(REGLE_TEXT_2,REGLE_TEXT_RECT_2)
-        
-        screen.blit(REGLE_TEXT_3,REGLE_TEXT_RECT_3)
-        
-        screen.blit(REGLE_TEXT_4,REGLE_TEXT_RECT_4)
-        screen.blit(REGLE_TEXT_5,REGLE_TEXT_RECT_5)
-        screen.blit(REGLE_TEXT_6,REGLE_TEXT_RECT_6)
+        SCREEN.blit(REGLE_TITLE,REGLE_RECT)
+        SCREEN.blit(REGLE_TEXT_1,REGLE_TEXT_RECT_1)
+        SCREEN.blit(REGLE_TEXT_2,REGLE_TEXT_RECT_2)
+        SCREEN.blit(REGLE_TEXT_3,REGLE_TEXT_RECT_3)
+        SCREEN.blit(REGLE_TEXT_4,REGLE_TEXT_RECT_4)
+        SCREEN.blit(REGLE_TEXT_5,REGLE_TEXT_RECT_5)
+        SCREEN.blit(REGLE_TEXT_6,REGLE_TEXT_RECT_6)
 
 
-        # choose difficulty
+        
 
         RANDOM_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 370), 
                             text_input="RANDOM", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
@@ -387,35 +357,37 @@ def choose_difficulty():
         
         for button in [MINMAX_BUTTON, MAX_BUTTON,RANDOM_BUTTON]:
             button.changeColor(MOUSE_POS)
-            button.update(screen)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                global difficulty
+                global ai_difficulty
                 if MINMAX_BUTTON.checkForInput(MOUSE_POS):
-                    difficulty = "minmax"
+                    ai_difficulty = "minmax"
                     play()
                 if MAX_BUTTON.checkForInput(MOUSE_POS): 
-                    difficulty = "max"      
+                    ai_difficulty = "max"      
                     play()
                 if RANDOM_BUTTON.checkForInput(MOUSE_POS):
-                    difficulty = "random"
+                    ai_difficulty = "random"
                     play()
 
         pygame.display.update()
+
+        
 def replay():
     pygame.time.delay(3000)
-    global rep
-    global winner
-    rep = "n"
+    global replay_available
+    global winner_of_the_game
+    replay_available = False
     while True:
-        screen.blit(BG, (0, 0))
+        SCREEN.blit(BG, (0, 0))
 
         MOUSE_POS = pygame.mouse.get_pos()
 
-        REPLAY_TEXT = get_font(20).render(winner, True, "#b68f40")
+        REPLAY_TEXT = get_font(20).render(winner_of_the_game, True, "#b68f40")
         REPLAY_RECT = REPLAY_TEXT.get_rect(center=(400, 100))
 
         REPLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 250), 
@@ -423,60 +395,23 @@ def replay():
         QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(400, 400), 
                             text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
 
-        screen.blit(REPLAY_TEXT, REPLAY_RECT)
+        SCREEN.blit(REPLAY_TEXT, REPLAY_RECT)
 
         for button in [REPLAY_BUTTON, QUIT_BUTTON]:
             button.changeColor(MOUSE_POS)
-            button.update(screen)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                
                 if REPLAY_BUTTON.checkForInput(MOUSE_POS):
-                  global mancala
-                  print(mancala.grille)
-                  reset_game()
-                  play()
+                    reset_game()
+                    play()
                    
                 if QUIT_BUTTON.checkForInput(MOUSE_POS):
                     pygame.quit()
         pygame.display.update()
 
-def main_menu():
 
-    while True:
-       
-        screen.blit(BG, (0, 0))
-
-        MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-        MENU_TEXT = get_font(70).render("MAIN MENU", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
-
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 250), 
-                            text_input="PLAY", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(400, 400), 
-                            text_input="QUIT", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
-
-        screen.blit(MENU_TEXT, MENU_RECT)
-
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
-            button.update(screen)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                   # play()
-                   choose_difficulty()
-                
-                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    pygame.quit()
-                    
-        pygame.display.update()
 main_menu()
