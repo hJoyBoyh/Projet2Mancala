@@ -73,6 +73,7 @@ def main_menu():
 def play():
 
     global ai_difficulty
+    pygame.display.set_caption(f"Mancala - {ai_difficulty}")
 
     listPuitCollider = []
     #---------- All Show Fonction---------------
@@ -190,7 +191,7 @@ def play():
         
         for index, key in enumerate(mancala.grille):
             mancala_UI.puits[index].nbGraines = mancala.grille.get(mancala_UI.puits[index].label)
-            print(mancala_UI.puits[index].label)
+           
 
     #basket et puit si = 0
             if not mancala_UI.puits[index].label in "12" and  mancala_UI.puits[index].nbGraines == 0:
@@ -317,22 +318,25 @@ def choose_difficulty():
         regle_instruction_1 = " Le Mancala se compose de 12 cases, d’un coffre à trésors de chaque côté et de 24 jetons au total."
         regle_instruction_2 = "Le jeu se joue à deux personnes: le premier joueur possède le côté jaune, le deuxième joueur le bleu."
         regle_instruction_3 = "Avant le début de la partie, répartir les 48 jetons de manière égale entre les 12 cases,"
-        regle_instruction_6 = " il y en aura donc six dans chaque case."
+        regle_instruction_6 = " il y en aura donc 4 dans chaque case."
         regle_instruction_4 = "Les coffres à trésors restent vides pour le moment."
+        regle_instruction_7 = "Pour gagner il faut avoir le plus de points dans son panier."
         regle_instruction_5 = "SELECT YOUR DIFFICULTY"
 
-        REGLE_TEXT_1 = get_font(7.5).render(regle_instruction_1, True, "#b68f40")
-        REGLE_TEXT_RECT_1 = REGLE_TEXT_1.get_rect(center=(400, 200))
-        REGLE_TEXT_2 = get_font(7.5).render(regle_instruction_2, True, "#b68f40")
-        REGLE_TEXT_RECT_2 = REGLE_TEXT_2.get_rect(center=(400,215))
-        REGLE_TEXT_3 = get_font(7.5).render(regle_instruction_3, True, "#b68f40")
-        REGLE_TEXT_RECT_3 = REGLE_TEXT_3.get_rect(center=(400, 230))
-        REGLE_TEXT_6 = get_font(7.5).render(regle_instruction_6, True, "#b68f40")
-        REGLE_TEXT_RECT_6 = REGLE_TEXT_6.get_rect(center=(400, 240))
-        REGLE_TEXT_4 = get_font(7.5).render(regle_instruction_4, True, "#b68f40")
-        REGLE_TEXT_RECT_4 = REGLE_TEXT_4.get_rect(center=(400, 250))
+        REGLE_TEXT_1 = get_font(7).render(regle_instruction_1, True, "#b68f40")
+        REGLE_TEXT_RECT_1 = REGLE_TEXT_1.get_rect(center=(400, 180))
+        REGLE_TEXT_2 = get_font(7).render(regle_instruction_2, True, "#b68f40")
+        REGLE_TEXT_RECT_2 = REGLE_TEXT_2.get_rect(center=(400,200))
+        REGLE_TEXT_3 = get_font(7).render(regle_instruction_3, True, "#b68f40")
+        REGLE_TEXT_RECT_3 = REGLE_TEXT_3.get_rect(center=(400, 215))
+        REGLE_TEXT_6 = get_font(7).render(regle_instruction_6, True, "#b68f40")
+        REGLE_TEXT_RECT_6 = REGLE_TEXT_6.get_rect(center=(400, 230))
+        REGLE_TEXT_4 = get_font(7).render(regle_instruction_4, True, "#b68f40")
+        REGLE_TEXT_RECT_4 = REGLE_TEXT_4.get_rect(center=(400, 240))
+        REGLE_TEXT_7 = get_font(7).render(regle_instruction_7, True, "#b68f40")
+        REGLE_TEXT_RECT_7 = REGLE_TEXT_7.get_rect(center=(400, 250))
         REGLE_TEXT_5 = get_font(30).render(regle_instruction_5, True, "black")
-        REGLE_TEXT_RECT_5 = REGLE_TEXT_5.get_rect(center=(370, 280))
+        REGLE_TEXT_RECT_5 = REGLE_TEXT_5.get_rect(center=(410, 280))
         
 
         
@@ -344,6 +348,7 @@ def choose_difficulty():
         SCREEN.blit(REGLE_TEXT_4,REGLE_TEXT_RECT_4)
         SCREEN.blit(REGLE_TEXT_5,REGLE_TEXT_RECT_5)
         SCREEN.blit(REGLE_TEXT_6,REGLE_TEXT_RECT_6)
+        SCREEN.blit(REGLE_TEXT_7,REGLE_TEXT_RECT_7)
 
 
         
@@ -376,7 +381,7 @@ def choose_difficulty():
 
         pygame.display.update()
 
-        
+
 def replay():
     pygame.time.delay(3000)
     global replay_available
