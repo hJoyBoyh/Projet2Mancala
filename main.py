@@ -109,6 +109,36 @@ def play():
             show_tour("Tour du AI")
             event_AI()
          
+    def gameManager():
+        global rep # y fini n pas fini"
+        global winner
+        if mancala.check_game_over(mancala.grille):
+            evaluation = mancala.evaluate(mancala.grille)
+    
+            if evaluation > 0:
+             show_tour("Winner player")
+             rep = "Y"
+             winner = f"Winner player {mancala.get_winner_points(mancala.grille)} points"
+   
+            elif evaluation == 0:
+                show_tour("Egal")
+                print("Winner egal")
+                rep = "Y"
+                winner = f"Egal {mancala.get_winner_points(mancala.grille)} points"
+                  
+            elif evaluation < 0:
+                print(f"{difficulty}AI a gagne")
+                show_tour(f"Winner AI")
+                rep = "Y"
+                winner = f"Winner AI {mancala.get_winner_points(mancala.grille)} points"
+            replay()
+        elif mancala.joueurTour:
+            print("Tour du joueur")
+            show_tour("Tour du Joueur")
+        else:
+            print(f"{difficulty}Tour du AI")
+            show_tour("Tour du AI")
+            event_AI()
 
 
     def updateGrill():
@@ -117,13 +147,15 @@ def play():
                 if key == val.label:
                     val.nbGraines = value
 
-        orderManager()
+        #orderManager()
+        gameManager()
 
     def event_puit(id):
         if mancala.joueurDeplacement(id) != False:
             updateGrill() 
         else: 
-            orderManager()
+            #orderManager()
+            gameManager()
             
     
     def event_reset():
@@ -290,10 +322,14 @@ def play():
         if rep == "Y":
             replay()
         update_puits()
-        orderManager()
+        gameManager()
     
    # show_puit(puits[0].x, puits[0].y)
         pygame.display.update()
+
+
+
+
 def choose_difficulty():
     bg2 = pygame.image.load("assets/Background2.png")
     while True:
@@ -402,7 +438,7 @@ def replay():
                   global mancala
                   print(mancala.grille)
                   reset_game()
-                  main_menu()
+                  play()
                    
                 if QUIT_BUTTON.checkForInput(MOUSE_POS):
                     pygame.quit()

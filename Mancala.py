@@ -148,6 +148,7 @@ class Mancala:
         print(f"Maximize Depth {depth}: Best Move = {best_move}, Max Eval = {max_eval}")
         return max_eval, best_move
 
+# permet de check qui es le winner
     def evaluate(self, board):
         if board is None:
             return 0
@@ -155,7 +156,34 @@ class Mancala:
         player_b_score = sum(board[key] for key in "GHIJKL1")
 
         return player_a_score - player_b_score
+    # permet de check le nb de points du winner
+    def get_winner_points(self,board):
+       # check juste les puits et non les paniers
+       player_a_score = sum(board[key] for key in "ABCDEF")
+       player_b_score = sum(board[key] for key in "GHIJKL")
 
+       total_a = sum(board[key] for key in "ABCDEF2")
+       total_b = sum(board[key] for key in "GHIJKL1")
+       if player_a_score == 0 or player_b_score == 0 :
+           if total_a > total_b :
+               return total_a
+           elif total_a < total_b:
+               return total_b
+       return total_a
+           
+
+
+    #check si la partie est fini    
+    def check_game_over(self,board):
+        player_a_score = sum(board[key] for key in "ABCDEF")
+        player_b_score = sum(board[key] for key in "GHIJKL")
+
+        if(player_a_score == 0 or player_b_score == 0):
+            return True
+        return False
+
+
+    
     def isTerminal(self, board, maximising):
         return not self.getValidMoves(board, maximising)
     
