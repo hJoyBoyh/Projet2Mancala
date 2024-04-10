@@ -13,9 +13,8 @@ Technologies Utilisées :
 ** Random
 
 Description du Projet :
-* J'ai entrepris la création d'un jeu Mancala qui capture l'essence du jeu de plateau traditionnel tout en intégrant des techniques de programmation modernes. Utilisant Python comme langage principal et PyQt pour l'interface utilisateur graphique (GUI), j'ai s
+* J'ai entrepris la création d'un jeu Mancala qui capture l'essence du jeu de plateau traditionnel tout en intégrant des techniques de programmation modernes. Utilisant Python comme langage principal et PyQt pour l'interface utilisateur graphique (GUI), j'ai soigneusement conçu un plateau numérique visuellement attrayant et intuitif qui reproduit fidèlement l'expérience originale du Mancala.
+L'une des principales caractéristiques de ma mise en œuvre est l'intégration de trois adversaires contrôlés par l'IA, offrant chacun un défi unique aux joueurs
+
 
 https://github.com/hJoyBoyh/Projet2Mancala/assets/105388762/9caec792-97ce-471e-a04d-34e91b84f53b
-
-oigneusement conçu un plateau numérique visuellement attrayant et intuitif qui reproduit fidèlement l'expérience originale du Mancala.
-L'une des principales caractéristiques de ma mise en œuvre est l'intégration de trois adversaires contrôlés par l'IA, offrant chacun un défi unique aux joueurs :
